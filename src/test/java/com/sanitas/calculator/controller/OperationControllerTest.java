@@ -1,8 +1,5 @@
 package com.sanitas.calculator.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
@@ -11,26 +8,30 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sanitas.calculator.enums.TypeOperationEnum;
-import com.sanitas.calculator.exceptions.OperationNoImplementException;
 import com.sanitas.calculator.request.RequestOperation;
 import com.sanitas.calculator.service.OperationService;
 
+@WebMvcTest(OperationController.class)
 public class OperationControllerTest {
 	
 	@Autowired
 	private MockMvc mvc;
 	
-	@InjectMocks
-	OperationService operationService;
+//	@InjectMocks
+//	private final OperationController operationController = new OperationController();
 	
+	@MockBean
+	private OperationService operationService;
+
 	ObjectMapper objectMapper;
 	
 	@BeforeEach
@@ -45,30 +46,27 @@ public class OperationControllerTest {
 		@Test
 		@DisplayName("check controller calculate with operation add")
 		void calculateOperationAddTest() throws Exception {
-			//Given
-			when(operationService.calculate(any(), any(), TypeOperationEnum.add.getValue())).thenReturn(new BigDecimal(100));
 			
 			RequestOperation request = new RequestOperation();
+			request.setNumber1(new BigDecimal(100));
+			request.setNumber2(new BigDecimal(200));
 			request.setOperation(TypeOperationEnum.add.getValue());
 			
-			//When
 			mvc.perform(MockMvcRequestBuilders.get("/api/operation").contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(request)))
 			
-			//Then
 			.andExpect(status().isOk());
-			
-			verify(operationService.calculate(any(), any(), TypeOperationEnum.add.getValue()));
 		}
 		
 		@Test
 		@DisplayName("check controller calculate with operation subtract")
 		void calculateOperationSubtractTest() throws Exception{
 			//Given
-			when(operationService.calculate(any(), any(), TypeOperationEnum.subtract.getValue())).thenReturn(new BigDecimal(100));
 			
 			RequestOperation request = new RequestOperation();
 			request.setOperation(TypeOperationEnum.subtract.getValue());
+			request.setNumber1(new BigDecimal(200));
+			request.setNumber2(new BigDecimal(100));
 			
 			//When
 			mvc.perform(MockMvcRequestBuilders.get("/api/operation").contentType(MediaType.APPLICATION_JSON)
@@ -77,17 +75,16 @@ public class OperationControllerTest {
 			//Then
 			.andExpect(status().isOk());
 			
-			verify(operationService.calculate(any(), any(), TypeOperationEnum.subtract.getValue()));
 			
 		}
 		
 		@Test
 		@DisplayName("check controller calculate with exception")
 		void calculateOperationExceptionTest() throws Exception {
-			//Given
-			when(operationService.calculate(any(), any(), "%")).thenThrow(OperationNoImplementException.class);
 			
 			RequestOperation request = new RequestOperation();
+			request.setNumber1(new BigDecimal(200));
+			request.setNumber2(new BigDecimal(100));
 			request.setOperation("%");
 			
 			//When
@@ -96,8 +93,6 @@ public class OperationControllerTest {
 			
 			//Then
 			.andExpect(status().isNotFound());
-			
-			verify(operationService.calculate(any(), any(), "%"));
 		}
 	}
 
