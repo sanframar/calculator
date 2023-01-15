@@ -17,7 +17,7 @@ import com.sanitas.calculator.exceptions.OperationNoImplementException;
 public class OperationServiceTest {
 	
 	@InjectMocks
-	OperationService operationService;
+	private OperationServiceImpl operationService = new OperationServiceImpl();
 	
 	@Nested
 	@DisplayName("check method calculate")
@@ -43,7 +43,6 @@ public class OperationServiceTest {
 			BigDecimal expected = new BigDecimal(100);
 			assertNotNull(actual);
 			assertEquals(expected, actual);
-			
 		}
 		
 		@Test
