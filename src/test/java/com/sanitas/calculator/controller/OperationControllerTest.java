@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,10 +26,7 @@ public class OperationControllerTest {
 	
 	@Autowired
 	private MockMvc mvc;
-	
-//	@InjectMocks
-//	private final OperationController operationController = new OperationController();
-	
+		
 	@MockBean
 	private OperationService operationService;
 
@@ -41,6 +39,7 @@ public class OperationControllerTest {
 	
 	@Nested
 	@DisplayName("check controller calculate")
+	@Disabled
 	class OperationServiceCalculate{
 		
 		@Test

@@ -1,6 +1,7 @@
 package com.sanitas.calculator.service;
 
 import java.math.BigDecimal;
+import io.corp.calculator.TracerImpl;
 
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,12 @@ public class OperationServiceImpl implements OperationService{
 		OperationFactoryImpl operationFactory = new OperationFactoryImpl();
 		Operation operationToApply = operationFactory.createOperation(operation);
 		
-		return operationToApply.calculate(number1, number2);
+		BigDecimal result = operationToApply.calculate(number1, number2);
+		
+		TracerImpl tracer = new TracerImpl();
+		tracer.trace(result);
+		
+		return result;
 	}
 
 }
