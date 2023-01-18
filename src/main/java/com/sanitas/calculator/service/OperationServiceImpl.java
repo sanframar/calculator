@@ -3,6 +3,7 @@ package com.sanitas.calculator.service;
 import java.math.BigDecimal;
 import io.corp.calculator.TracerImpl;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.sanitas.calculator.dto.Operation;
@@ -12,6 +13,7 @@ import com.sanitas.calculator.factories.OperationFactoryImpl;
 public class OperationServiceImpl implements OperationService{
 
 	@Override
+	@Cacheable("calculates")
 	public BigDecimal calculate(BigDecimal number1, BigDecimal number2, String operation) {
 		
 		OperationFactoryImpl operationFactory = new OperationFactoryImpl();
