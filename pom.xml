@@ -16,6 +16,11 @@
 	<description>Demo project for Calculator</description>
 	<properties>
 		<java.version>17</java.version>
+
+		<!-- Versions -->
+		<springfox.version>3.0.0</springfox.version>
+		<openapi-generator-maven-plugin.version>5.2.1</openapi-generator-maven-plugin.version>
+
 	</properties>
 	<dependencies>
 
@@ -45,6 +50,42 @@
 		</dependency>
 
 		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>${springfox.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>2.0.1.Final</version>
+		</dependency>
+
+		<dependency>
 			<groupId>io.corp.calculator</groupId>
 			<artifactId>tracer</artifactId>
 			<version>1.0.0</version>
@@ -59,6 +100,35 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>${openapi-generator-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>calculatorApi</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>true</skip>
+							<inputSpec>${project.basedir}/src/main/resources/static/calculator-rest.yml</inputSpec>
+							<generatorName>spring</generatorName>
+							<modelNameSuffix>Dto</modelNameSuffix>
+							<supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+							<apiPackage>${service.base.path}.controllers</apiPackage>
+							<modelPackage>${service.base.path}.dto</modelPackage>
+							<typeMappings>
+								<typeMapping>OffsetDateTime=java.time.LocalDateTime</typeMapping>
+							</typeMappings>
+							<configOptions>
+								<delegatePattern>true</delegatePattern>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

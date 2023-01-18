@@ -1,98 +1,116 @@
 package com.sanitas.calculator.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sanitas.calculator.enums.TypeOperationEnum;
+import com.sanitas.calculator.exceptions.OperationNoImplementException;
 import com.sanitas.calculator.request.RequestOperation;
 import com.sanitas.calculator.service.OperationService;
 
-@WebMvcTest(OperationController.class)
 public class OperationControllerTest {
-	
-	@Autowired
-	private MockMvc mvc;
-		
-	@MockBean
+
+	@InjectMocks
+	private final OperationController operationController = new OperationController();
+
+	@Mock
 	private OperationService operationService;
 
-	ObjectMapper objectMapper;
-	
+	/**
+	 * Initializes.
+	 */
 	@BeforeEach
-	void setUp() {
-		objectMapper = new ObjectMapper();
+	public void init() {
+		MockitoAnnotations.openMocks(this);
 	}
 	
-	@Nested
-	@DisplayName("check controller calculate")
-	@Disabled
-	class OperationServiceCalculate{
+	@Test
+	@DisplayName("check controller calculate with operation add and random numbers")
+	void calculate_addOperationWithRandomNumbers_statusOK() {
+
+		ResponseEntity<?> result = this.operationController
+				.calculate(new RequestOperation(
+					new BigDecimal(Math.random()),
+					new BigDecimal(Math.random()),
+					TypeOperationEnum.add.getValue()));
+
+		Assertions.assertNotNull(result);
+		Assertions.assertTrue(HttpStatus.OK.equals(result.getStatusCode()));
+
+	}
+	
+	@Test
+	@DisplayName("check controller calculate with operation add and corner cases")
+	void calculate_addOperationWithCornerCases_statusOK() {
+
+		ResponseEntity<?> result = this.operationController
+				.calculate(new RequestOperation(
+					new BigDecimal(Double.MAX_VALUE),
+					new BigDecimal(Double.MAX_VALUE),
+					TypeOperationEnum.add.getValue()));
+
+		Assertions.assertNotNull(result);
+		Assertions.assertTrue(HttpStatus.OK.equals(result.getStatusCode()));
+
+	}
+
+	@Test
+	@DisplayName("check controller calculate with operation subtract and random numbers")
+	void calculate_SubtractOperationWithRandomNumbers_statusOK() throws Exception {
+
+		ResponseEntity<?> result = this.operationController
+				.calculate(new RequestOperation(
+					new BigDecimal(Math.random()),
+					new BigDecimal(Math.random()),
+					TypeOperationEnum.subtract.getValue()));
+
+		Assertions.assertNotNull(result);
+		Assertions.assertTrue(HttpStatus.OK.equals(result.getStatusCode()));
+	}
+	
+	@Test
+	@DisplayName("check controller calculate with operation subtract with corner cases")
+	void calculate_SubtractOperationWithCornerCases_statusOK() throws Exception {
+
+		ResponseEntity<?> result = this.operationController
+				.calculate(new RequestOperation(
+					new BigDecimal(Double.MIN_VALUE),
+					new BigDecimal(Double.MIN_VALUE),
+					TypeOperationEnum.subtract.getValue()));
+
+		Assertions.assertNotNull(result);
+		Assertions.assertTrue(HttpStatus.OK.equals(result.getStatusCode()));
+
+
+	}
+
+	@Test
+	@DisplayName("check controller calculate with exception")
+	void calculate_withNoExistOperation_OperationNoImplementException() throws Exception {
+
+		Mockito.when(this.operationService.calculate(
+				ArgumentMatchers.any(),
+				ArgumentMatchers.any(),
+				ArgumentMatchers.any()))
+		.thenThrow(OperationNoImplementException.class);
 		
-		@Test
-		@DisplayName("check controller calculate with operation add")
-		void calculateOperationAddTest() throws Exception {
-			
-			RequestOperation request = new RequestOperation();
-			request.setNumber1(new BigDecimal(100));
-			request.setNumber2(new BigDecimal(200));
-			request.setOperation(TypeOperationEnum.add.getValue());
-			
-			mvc.perform(MockMvcRequestBuilders.get("/api/operation").contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(request)))
-			
-			.andExpect(status().isOk());
-		}
-		
-		@Test
-		@DisplayName("check controller calculate with operation subtract")
-		void calculateOperationSubtractTest() throws Exception{
-			//Given
-			
-			RequestOperation request = new RequestOperation();
-			request.setOperation(TypeOperationEnum.subtract.getValue());
-			request.setNumber1(new BigDecimal(200));
-			request.setNumber2(new BigDecimal(100));
-			
-			//When
-			mvc.perform(MockMvcRequestBuilders.get("/api/operation").contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(request)))
-			
-			//Then
-			.andExpect(status().isOk());
-			
-			
-		}
-		
-		@Test
-		@DisplayName("check controller calculate with exception")
-		void calculateOperationExceptionTest() throws Exception {
-			
-			RequestOperation request = new RequestOperation();
-			request.setNumber1(new BigDecimal(200));
-			request.setNumber2(new BigDecimal(100));
-			request.setOperation("%");
-			
-			//When
-			mvc.perform(MockMvcRequestBuilders.get("/api/operation").contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(request)))
-			
-			//Then
-			.andExpect(status().isNotFound());
-		}
+		ResponseEntity<?> result = this.operationController
+				.calculate(new RequestOperation());
+
+		Assertions.assertNotNull(result);
+		Assertions.assertTrue(HttpStatus.NOT_FOUND.value() == result.getStatusCode().value());
 	}
 
 }

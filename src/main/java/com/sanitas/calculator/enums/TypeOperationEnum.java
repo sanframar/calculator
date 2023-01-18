@@ -1,5 +1,7 @@
 package com.sanitas.calculator.enums;
 
+import java.util.Arrays;
+
 public enum TypeOperationEnum {
 	
 	add("+"),
@@ -16,12 +18,10 @@ public enum TypeOperationEnum {
 	}
 	
 	public static TypeOperationEnum getTypeOperation(String symbol) {
-		for(TypeOperationEnum typeOperation : TypeOperationEnum.values()) {
-			if(typeOperation.getValue().equalsIgnoreCase(symbol)) {
-				return typeOperation;
-			}
-		}
-		return null;
+		return Arrays.stream(TypeOperationEnum.values())
+		.filter(typeOperation -> typeOperation.getValue().equalsIgnoreCase(symbol))
+		.findAny()
+		.orElse(null);
 	}
 	
 	public static boolean contains(String value) {

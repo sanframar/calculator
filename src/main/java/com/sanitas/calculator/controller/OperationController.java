@@ -12,11 +12,16 @@ import com.sanitas.calculator.exceptions.OperationNoImplementException;
 import com.sanitas.calculator.request.RequestOperation;
 import com.sanitas.calculator.service.OperationService;
 
+import __service.base.path_.controllers.CalculateApiDelegate;
+import __service.base.path_.dto.RequestCalculateDto;
+
 @RestController
-public class OperationController {
+public class OperationController{
 	
 	@Autowired
 	private OperationService operationService;
+	
+	
 	
 	@GetMapping("/api/operation")
 	public ResponseEntity<?> calculate(@RequestBody RequestOperation requestOperation){
@@ -32,13 +37,13 @@ public class OperationController {
 			
 			return ResponseEntity.ok(result);
 			
-		} catch (OperationNoImplementException e1) {
+		} catch (OperationNoImplementException noImplementException) {
 			return ResponseEntity.notFound().build();
-		} catch (Exception e2) {
+		} catch (Exception exception) {
 			return ResponseEntity.badRequest().build();
 		} 
 	}
-	
+
 	private boolean checkRequestOperation(RequestOperation requestOperation) {
 		boolean result = Boolean.FALSE;
 		if(requestOperation != null && requestOperation.getNumber1() != null

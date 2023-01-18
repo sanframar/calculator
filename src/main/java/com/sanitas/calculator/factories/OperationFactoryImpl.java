@@ -11,7 +11,6 @@ public class OperationFactoryImpl implements OperationFactory {
 	@Override
 	public Operation createOperation(String operation) {
 
-		// Check if operation exists
 		if (!TypeOperationEnum.contains(operation)) {
 			throw new OperationNoImplementException("no implement operation");
 		}

@@ -1,0 +1,107 @@
+openapi: 3.0.1
+info:
+  title: Calculator API
+  description: API to be consumed
+  version: 1.0.0
+  contact:
+    name: Santiago
+tags:
+  - name: Calculator
+paths:
+  /api/operation:
+    get:
+      tags:
+        - Calculate
+      summary: Calculate the operation
+      description: The response returns the operation result
+      operationId: calculate
+      requestBody:
+        description: The body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestCalculate'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
+        '400':
+          $ref: '#/components/responses/400'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: UUID of this error
+          format: uuid
+          example: 4c3a5767-4973-44b0-a9c2-b8cf1b34373a
+          readOnly: true
+        method:
+          type: string
+          example: GET
+          description: HTTP method with which this request was made
+          readOnly: true
+        path:
+          type: string
+          format: uri-reference
+          example: /api/operation
+          description: Path of this request
+          readOnly: true
+        status:
+          type: integer
+          example: 500
+          format: int32
+          description: Https status code
+          readOnly: true
+        description:
+          type: string
+          example: 'An error occurred when updating a movie. Please try again later'
+          description: Message with the error explained
+      required:
+        - uuid
+        - status
+        - description
+    RequestCalculate:
+      type: object
+      description: A request calculate
+      properties:
+        number1:
+          type: number
+          description: Number1 to calculare
+          example: 150
+          minLength: 1
+        number2:
+          type: number
+          description: Number2 to calculare
+          example: 50
+        operation:
+          type: string
+          description: Operation to calculare
+          example: +
+      required:
+        - number1
+        - number2
+  responses:
+    '400':
+      description: 'Bad Request, JSON body error.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            example-1:
+              value:
+                uuid: 4c3a5767-4973-44b0-a9c2-b8cf1b34373a
+                method: POST
+                path: /api/operation
+                status: 400
+                description: 'operation not support'
+servers:
+  - url: 'http://localhost:9090'
+    description: Local
