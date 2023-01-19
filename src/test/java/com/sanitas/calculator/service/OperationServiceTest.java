@@ -72,16 +72,4 @@ public class OperationServiceTest {
 			operationService.calculate(number1, number2, "%");
 		});
 	}
-	
-	@Test
-	@DisplayName("check method calculate with string instance of umerexception")
-	void calculate_OperationWithStringInstanceOfNumber_operationNoImplementException() {
-		BigDecimal number1 = new BigDecimal(500);
-		BigDecimal number2 = new BigDecimal(400);
-
-		assertThrows(OperationNoImplementException.class, () -> {
-			operationService.calculate(number1, number2, "%");
-		});
-	}
-
 }

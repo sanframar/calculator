@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.0.0
 info:
   title: Calculator API
   description: API to be consumed
@@ -61,7 +61,7 @@ components:
           readOnly: true
         description:
           type: string
-          example: 'An error occurred when updating a movie. Please try again later'
+          example: 'Error. Please try again later'
           description: Message with the error explained
       required:
         - uuid
@@ -73,20 +73,21 @@ components:
       properties:
         number1:
           type: number
-          description: Number1 to calculare
+          description: Number1 to calculate
           example: 150
           minLength: 1
         number2:
           type: number
-          description: Number2 to calculare
+          description: Number2 to calculate
           example: 50
         operation:
           type: string
-          description: Operation to calculare
+          description: Operation to calculate
           example: +
       required:
         - number1
         - number2
+        - operation
   responses:
     '400':
       description: 'Bad Request, JSON body error.'
@@ -98,7 +99,7 @@ components:
             example-1:
               value:
                 uuid: 4c3a5767-4973-44b0-a9c2-b8cf1b34373a
-                method: POST
+                method: GET
                 path: /api/operation
                 status: 400
                 description: 'operation not support'

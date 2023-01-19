@@ -1,4 +1,4 @@
-package com.sanitas.calculator.dto;
+package com.sanitas.calculator.factories;
 
 import java.math.BigDecimal;
 

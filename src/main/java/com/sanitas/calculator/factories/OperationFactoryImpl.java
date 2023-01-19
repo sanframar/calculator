@@ -1,8 +1,5 @@
 package com.sanitas.calculator.factories;
 
-import com.sanitas.calculator.dto.Add;
-import com.sanitas.calculator.dto.Operation;
-import com.sanitas.calculator.dto.Subtract;
 import com.sanitas.calculator.enums.TypeOperationEnum;
 import com.sanitas.calculator.exceptions.OperationNoImplementException;
 
